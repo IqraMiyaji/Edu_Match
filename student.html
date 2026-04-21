@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduMatch – Find a Tutor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0f0f0f; --paper: #faf8f4; --cream: #f0ece3;
+      --accent: #c84b31; --accent-lt: #f5d5ce; --gold: #d4a853;
+      --border: #d9d3c7; --muted: #7a7269; --radius: 10px;
+      --shadow: 0 4px 24px rgba(0,0,0,.08);
+      --font-head: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+    header { background: var(--ink); padding: 18px 28px; display: flex; align-items: center; gap: 14px; }
+    .logo { font-family: var(--font-head); font-size: 1.6rem; color: #fff; letter-spacing: -.5px; text-decoration: none; }
+    .logo span { color: var(--gold); }
+    .nav-link { color: var(--cream); text-decoration: none; font-size: .85rem; font-weight: 500; border: 1px solid rgba(255,255,255,.3); padding: 6px 14px; border-radius: 40px; transition: background .2s; }
+    .nav-link:hover { background: rgba(255,255,255,.1); }
+
+    .hero { background: var(--cream); border-bottom: 1px solid var(--border); padding: 40px 28px 32px; text-align: center; }
+    .hero h1 { font-family: var(--font-head); font-size: clamp(1.8rem, 5vw, 2.8rem); }
+    .hero p { color: var(--muted); margin-top: 8px; font-size: .95rem; }
+
+    .layout { max-width: 1140px; margin: 0 auto; padding: 32px 20px 80px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
+    @media(max-width:768px) { .layout { grid-template-columns: 1fr; } }
+
+    .sidebar { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; box-shadow: var(--shadow); position: sticky; top: 20px; }
+    .sidebar h2 { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--accent); }
+    .filter-group { margin-bottom: 20px; }
+    .filter-label { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 7px; display: block; }
+    .filter-group select, .filter-group input { width: 100%; font-family: var(--font-body); font-size: .9rem; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--paper); color: var(--ink); outline: none; transition: border-color .2s; }
+    .filter-group select:focus, .filter-group input:focus { border-color: var(--accent); }
+
+    .chip-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip-filter input[type="checkbox"] { display: none; }
+    .chip-filter label { font-size: .78rem; font-weight: 500; padding: 5px 11px; border: 1.5px solid var(--border); border-radius: 40px; cursor: pointer; background: var(--paper); color: var(--ink); transition: all .15s; user-select: none; }
+    .chip-filter input[type="checkbox"]:checked + label { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .btn-reset { width: 100%; padding: 9px; background: transparent; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: var(--font-body); font-size: .85rem; color: var(--muted); cursor: pointer; margin-top: 4px; transition: all .15s; }
+    .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .results-header h2 { font-family: var(--font-head); font-size: 1.3rem; }
+    #resultCount { font-size: .85rem; color: var(--muted); background: var(--cream); padding: 4px 12px; border-radius: 40px; }
+
+    #tutorGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+    .tutor-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; transition: transform .2s, box-shadow .2s; }
+    .tutor-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,.12); }
+
+    .avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--accent-lt); color: var(--accent); font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-top { display: flex; align-items: center; gap: 14px; }
+    .card-top-info { min-width: 0; }
+    .tutor-name { font-family: var(--font-head); font-size: 1.15rem; line-height: 1.2; }
+    .tutor-qual { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { font-size: .72rem; font-weight: 500; padding: 3px 9px; border-radius: 40px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); }
+    .tag.highlight { background: var(--accent-lt); border-color: var(--accent-lt); color: var(--accent); }
+
+    .stats { display: flex; gap: 14px; font-size: .82rem; color: var(--muted); }
+    .stats span { display: flex; align-items: center; gap: 4px; }
+    .stats strong { color: var(--ink); }
+
+    .tutor-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .tutor-location { font-size: .82rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+    .contact-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+    .btn-call, .btn-wa { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 10px; border-radius: var(--radius); font-family: var(--font-body); font-size: .82rem; font-weight: 600; text-decoration: none; transition: opacity .15s; border: none; cursor: pointer; }
+    .btn-call { background: var(--ink); color: #fff; }
+    .btn-wa { background: #25d366; color: #fff; }
+    .btn-call:hover, .btn-wa:hover { opacity: .85; }
+
+    .state-msg { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1/-1; }
+    .state-msg .icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+
+    #filterToggle { display: none; width: 100%; padding: 11px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: .9rem; cursor: pointer; margin-bottom: 16px; }
+    @media(max-width:768px) { #filterToggle { display: block; } .sidebar { display: none; } .sidebar.open { display: block; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Edu<span>Match</span></a>
+    <a class="nav-link" href="index.html" style="margin-left:8px">← Home</a>
+    <a class="nav-link" href="teacher.html" style="margin-left:auto">Register as Tutor</a>
+  </header>
+
+  <div class="hero">
+    <h1>Find the Right Tutor Near You</h1>
+    <p>Browse verified tutors by city, board, subjects, and mode of teaching.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <button id="filterToggle" onclick="document.getElementById('filterSidebar').classList.toggle('open')">⚙️ Filters</button>
+      <aside class="sidebar" id="filterSidebar">
+        <h2>Filters</h2>
+        <div class="filter-group">
+          <span class="filter-label">City</span>
+          <input type="text" id="filterCity" placeholder="e.g. Mumbai" oninput="applyFilters()" />
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Locality / Area</span>
+          <input type="text" id="filterLocality" placeholder="e.g. Andheri" oninput="applyFilters()" />
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Board</span>
+          <div class="chip-filter">
+            <input type="checkbox" id="fCBSE" value="CBSE" onchange="applyFilters()" /><label for="fCBSE">CBSE</label>
+            <input type="checkbox" id="fICSE" value="ICSE" onchange="applyFilters()" /><label for="fICSE">ICSE</label>
+            <input type="checkbox" id="fState" value="State" onchange="applyFilters()" /><label for="fState">State</label>
+            <input type="checkbox" id="fIB" value="IB" onchange="applyFilters()" /><label for="fIB">IB</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Min. Experience (years)</span>
+          <input type="number" id="filterExp" placeholder="e.g. 3" min="0" oninput="applyFilters()" />
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Teaching Mode</span>
+          <select id="filterMode" onchange="applyFilters()">
+            <option value="">All Modes</option>
+            <option value="Home">Home Visit</option>
+            <option value="Online">Online</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Subject Keyword</span>
+          <input type="text" id="filterSubject" placeholder="e.g. Maths" oninput="applyFilters()" />
+        </div>
+        <button class="btn-reset" onclick="resetFilters()">↺ Reset All Filters</button>
+      </aside>
+    </div>
+
+    <main>
+      <div class="results-header">
+        <h2>Available Tutors</h2>
+        <span id="resultCount">Loading…</span>
+      </div>
+      <div id="tutorGrid">
+        <div class="state-msg"><span class="icon">⏳</span>Loading tutors…</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ── CONFIG ────────────────────────────────────────────────
+    const API_URL = "https://script.google.com/macros/s/AKfycbwyHvHFqxN-n_D2N_TNoc6It1F2m9Fg0zLig5a5iOmfkZzpXUudZ6ZEIJfirjlU5p3Zcg/exec";
+
+    // ── STATE ─────────────────────────────────────────────────
+    let allTutors = [];
+
+    // ── FETCH ─────────────────────────────────────────────────
+    async function loadTutors() {
+      try {
+        const res  = await fetch(API_URL + "?action=getTutors");
+        const json = await res.json();
+        if (json.status === 200) {
+          allTutors = json.data || [];
+          applyFilters();
+        } else {
+          showError("Server error: " + (json.data && json.data.error));
+        }
+      } catch (err) {
+        showError("Could not connect to server. Check your internet connection.<br><small>" + err.message + "</small>");
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById("tutorGrid").innerHTML =
+        `<div class="state-msg"><span class="icon">⚠️</span>${msg}</div>`;
+      document.getElementById("resultCount").textContent = "Error";
+    }
+
+    // ── FILTERS ───────────────────────────────────────────────
+    function applyFilters() {
+      const city    = document.getElementById("filterCity").value.trim().toLowerCase();
+      const locality= document.getElementById("filterLocality").value.trim().toLowerCase();
+      const minExp  = parseInt(document.getElementById("filterExp").value) || 0;
+      const mode    = document.getElementById("filterMode").value.toLowerCase();
+      const subject = document.getElementById("filterSubject").value.trim().toLowerCase();
+      const boards  = [...document.querySelectorAll('.chip-filter input:checked')].map(c => c.value.toLowerCase());
+
+      const filtered = allTutors.filter(t => {
+        if (city     && !(t.City     || "").toLowerCase().includes(city))     return false;
+        if (locality && !(t.Locality || "").toLowerCase().includes(locality)) return false;
+        if (minExp   && Number(t.Experience) < minExp)                        return false;
+        if (subject  && !(t.Subjects || "").toLowerCase().includes(subject))  return false;
+        if (mode) {
+          const tm = (t.Mode || "").toLowerCase();
+          if (tm !== "both" && tm !== mode) return false;
+        }
+        if (boards.length > 0) {
+          const tb = (t.Boards || "").toLowerCase();
+          if (!boards.some(b => tb.includes(b))) return false;
+        }
+        return true;
+      });
+
+      renderCards(filtered);
+    }
+
+    function resetFilters() {
+      ["filterCity","filterLocality","filterExp","filterSubject"].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("filterMode").value = "";
+      document.querySelectorAll('.chip-filter input').forEach(c => c.checked = false);
+      applyFilters();
+    }
+
+    // ── RENDER ────────────────────────────────────────────────
+    function renderCards(tutors) {
+      document.getElementById("resultCount").textContent =
+        tutors.length + " tutor" + (tutors.length !== 1 ? "s" : "") + " found";
+
+      if (tutors.length === 0) {
+        document.getElementById("tutorGrid").innerHTML =
+          `<div class="state-msg"><span class="icon">🔍</span>No tutors match your filters.</div>`;
+        return;
+      }
+
+      document.getElementById("tutorGrid").innerHTML = tutors.map(buildCard).join("");
+    }
+
+    function buildCard(t) {
+      // Safely convert everything to string first
+      const name   = String(t.Name  || "").trim();
+      const phone  = String(t.Phone || "").replace(/\D/g, ""); // strip non-digits
+      const qual   = String(t.Qualification || "");
+      const exp    = String(t.Experience || "0");
+      const boards = String(t.Boards    || "");
+      const stds   = String(t.Standards || "");
+      const subj   = String(t.Subjects  || "");
+      const loc    = String(t.Locality  || "");
+      const city   = String(t.City      || "");
+      const desc   = String(t.Description || "");
+      const mode   = String(t.Mode || "");
+
+      const initial  = name.charAt(0).toUpperCase() || "T";
+      const modeIcon = { Home:"🏠", Online:"💻", Both:"🔀" }[mode] || "📚";
+      const waMsg    = encodeURIComponent("Hi " + name + ", I found your profile on EduMatch and would like to enquire about tutoring.");
+
+      const boardTags = boards.split(",").map(b => b.trim()).filter(Boolean)
+                          .map(b => `<span class="tag highlight">${esc(b)}</span>`).join("");
+      const stdTags   = stds.split(",").map(s => s.trim()).filter(Boolean)
+                          .map(s => `<span class="tag">Std ${esc(s)}</span>`).join("");
+      const subjTags  = subj.split(",").map(s => s.trim()).filter(Boolean)
+                          .map(s => `<span class="tag">📖 ${esc(s)}</span>`).join("");
+
+      const location = [loc, city].filter(Boolean).join(", ") || "Location not specified";
+
+      return `
+        <div class="tutor-card">
+          <div class="card-top">
+            <div class="avatar">${initial}</div>
+            <div class="card-top-info">
+              <div class="tutor-name">${esc(name)}</div>
+              <div class="tutor-qual">${esc(qual) || "Tutor"}</div>
+            </div>
+          </div>
+          <div class="stats">
+            <span>⏱ <strong>${esc(exp)}</strong> yrs exp</span>
+            <span>${modeIcon} ${esc(mode) || "—"}</span>
+          </div>
+          ${subjTags  ? `<div class="tags">${subjTags}</div>`            : ""}
+          ${(boardTags || stdTags) ? `<div class="tags">${boardTags}${stdTags}</div>` : ""}
+          <div class="tutor-location">📍 ${esc(location)}</div>
+          ${desc ? `<p class="tutor-desc">${esc(desc)}</p>` : ""}
+          <hr class="divider"/>
+          <div class="contact-btns">
+            <a class="btn-call" href="tel:${phone}">📞 Call</a>
+            <a class="btn-wa" href="https://wa.me/${phone}?text=${waMsg}" target="_blank" rel="noopener">💬 WhatsApp</a>
+          </div>
+        </div>`;
+    }
+
+    // ── HELPERS ───────────────────────────────────────────────
+    function esc(str) {
+      return String(str)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    // ── INIT ─────────────────────────────────────────────────
+    loadTutors();
+  </script>
+</body>
+</html>

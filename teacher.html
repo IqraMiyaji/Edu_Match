@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduMatch – Register as a Tutor</title>
+
+  <!-- Google Fonts: Playfair Display + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design Tokens ─────────────────────────────────────── */
+    :root {
+      --ink:        #0f0f0f;
+      --paper:      #faf8f4;
+      --cream:      #f0ece3;
+      --accent:     #c84b31;        /* warm terracotta */
+      --accent-lt:  #f5d5ce;
+      --gold:       #d4a853;
+      --border:     #d9d3c7;
+      --muted:      #7a7269;
+      --radius:     10px;
+      --shadow:     0 4px 24px rgba(0,0,0,.08);
+      --font-head:  'Playfair Display', Georgia, serif;
+      --font-body:  'DM Sans', sans-serif;
+    }
+
+    /* ── Reset / Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ────────────────────────────────────────────── */
+    header {
+      background: var(--ink);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      color: #fff;
+      letter-spacing: -.5px;
+    }
+
+    .logo span { color: var(--gold); }
+
+    .nav-link {
+      margin-left: auto;
+      color: var(--cream);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,.3);
+      padding: 6px 14px;
+      border-radius: 40px;
+      transition: background .2s;
+    }
+    .nav-link:hover { background: rgba(255,255,255,.1); }
+
+    /* ── Page layout ────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    .page-title {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 40px;
+    }
+
+    /* ── Card ───────────────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Section headings inside form ───────────────────────── */
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .section-label:first-child { margin-top: 0; }
+
+    /* ── Grid helpers ────────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── Form fields ─────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    label .req { color: var(--accent); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      font-family: var(--font-body);
+      font-size: .95rem;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-lt);
+    }
+
+    textarea { resize: vertical; min-height: 100px; }
+
+    /* ── Multi-select chips ─────────────────────────────────── */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .chip-group input[type="checkbox"] { display: none; }
+
+    .chip-group label {
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ink);
+      padding: 7px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 40px;
+      cursor: pointer;
+      background: var(--paper);
+      transition: background .15s, border-color .15s, color .15s;
+      user-select: none;
+    }
+
+    .chip-group input[type="checkbox"]:checked + label {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── Mode radio ─────────────────────────────────────────── */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .radio-group input[type="radio"] { display: none; }
+
+    .radio-group label {
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      padding: 9px 22px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--paper);
+      transition: all .15s;
+    }
+
+    .radio-group input[type="radio"]:checked + label {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    /* ── Submit button ───────────────────────────────────────── */
+    .btn-submit {
+      margin-top: 36px;
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .03em;
+      transition: background .2s, transform .1s;
+    }
+
+    .btn-submit:hover  { background: #b03a23; }
+    .btn-submit:active { transform: scale(.98); }
+    .btn-submit:disabled { background: var(--muted); cursor: not-allowed; }
+
+    /* ── Toast notification ─────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: 40px;
+      font-size: .9rem;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      z-index: 999;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #toast.error { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header>
+    <a href="index.html" style="text-decoration:none"><div class="logo">Edu<span>Match</span></div></a>
+    <a class="nav-link" href="student.html">Find a Tutor →</a>
+    <a class="nav-link" href="index.html" style="margin-left:8px">← Home</a>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <div class="page-wrap">
+    <h1 class="page-title">Register as a&nbsp;Tutor</h1>
+    <p class="page-subtitle">Fill in your details and students in your city will be able to discover you.</p>
+
+    <div class="card">
+      <form id="tutorForm" novalidate>
+
+        <!-- Personal Info -->
+        <div class="section-label">Personal Information</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="name">Full Name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" placeholder="e.g. Priya Sharma" required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="10-digit mobile" required />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label for="email">Email Address <em style="font-style:normal;font-weight:400">(optional)</em></label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" />
+        </div>
+
+        <!-- Teaching Profile -->
+        <div class="section-label">Teaching Profile</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="qualification">Highest Qualification</label>
+            <input type="text" id="qualification" name="qualification" placeholder="e.g. B.Ed, M.Sc, PhD" />
+          </div>
+          <div class="field">
+            <label for="experience">Years of Experience</label>
+            <input type="number" id="experience" name="experience" placeholder="e.g. 5" min="0" max="60" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label for="subjects">Subjects Taught</label>
+          <input type="text" id="subjects" name="subjects" placeholder="e.g. Maths, Physics, English" />
+        </div>
+
+        <!-- Boards -->
+        <div class="field" style="margin-top:18px">
+          <label>Boards <em style="font-style:normal;font-weight:400">(select all that apply)</em></label>
+          <div class="chip-group" id="boardsGroup">
+            <!-- Each checkbox + label pair = one chip -->
+            <input type="checkbox" id="cbse" name="boards" value="CBSE" />
+            <label for="cbse">CBSE</label>
+
+            <input type="checkbox" id="icse" name="boards" value="ICSE" />
+            <label for="icse">ICSE</label>
+
+            <input type="checkbox" id="state" name="boards" value="State" />
+            <label for="state">State Board</label>
+
+            <input type="checkbox" id="ib" name="boards" value="IB" />
+            <label for="ib">IB</label>
+          </div>
+        </div>
+
+        <!-- Standards -->
+        <div class="field" style="margin-top:18px">
+          <label>Standards / Grade Groups <em style="font-style:normal;font-weight:400">(select all that apply)</em></label>
+          <div class="chip-group" id="standardsGroup">
+            <input type="checkbox" id="std1" name="standards" value="1-5" />
+            <label for="std1">Class 1–5</label>
+
+            <input type="checkbox" id="std2" name="standards" value="6-8" />
+            <label for="std2">Class 6–8</label>
+
+            <input type="checkbox" id="std3" name="standards" value="9-10" />
+            <label for="std3">Class 9–10</label>
+
+            <input type="checkbox" id="std4" name="standards" value="11-12" />
+            <label for="std4">Class 11–12</label>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="section-label">Location</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="e.g. Mumbai" />
+          </div>
+          <div class="field">
+            <label for="locality">Locality / Area</label>
+            <input type="text" id="locality" name="locality" placeholder="e.g. Andheri West" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label for="address">Full Address <em style="font-style:normal;font-weight:400">(optional)</em></label>
+          <input type="text" id="address" name="address" placeholder="Building, street, landmark…" />
+        </div>
+
+        <!-- Mode & Description -->
+        <div class="section-label">Teaching Mode & About</div>
+
+        <div class="field">
+          <label>Teaching Mode</label>
+          <div class="radio-group">
+            <input type="radio" id="modeHome"   name="mode" value="Home" />
+            <label for="modeHome">🏠 Home Visit</label>
+
+            <input type="radio" id="modeOnline" name="mode" value="Online" />
+            <label for="modeOnline">💻 Online</label>
+
+            <input type="radio" id="modeBoth"   name="mode" value="Both" checked />
+            <label for="modeBoth">🔀 Both</label>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label for="description">About You / Teaching Style</label>
+          <textarea id="description" name="description"
+            placeholder="Tell students a little about your teaching approach, achievements, or availability…"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Register as Tutor</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Toast ─────────────────────────────────────────────── -->
+  <div id="toast"></div>
+
+  <!-- ── Script ────────────────────────────────────────────── -->
+  
+  <script>
+    /* ── API embedded directly so no external file needed ── */
+    const API_URL = "https://script.google.com/macros/s/AKfycbwyHvHFqxN-n_D2N_TNoc6It1F2m9Fg0zLig5a5iOmfkZzpXUudZ6ZEIJfirjlU5p3Zcg/exec";
+
+    async function submitTutor(payload) {
+      try {
+        const url  = API_URL + "?action=register&data=" + encodeURIComponent(JSON.stringify(payload));
+        const res  = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const json = await res.json();
+        if (json.status === 201) return { success: true };
+        return { success: false, error: (json.data && json.data.error) || "Server error" };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    }
+  </script>
+  <script>
+    // ── Form submission handler ──────────────────────────────
+    document.getElementById("tutorForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("submitBtn");
+
+      // ── Collect plain fields ─────────────────────────────
+      const name  = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      // Basic validation
+      if (!name || !phone) {
+        showToast("Name and Phone are required.", true);
+        return;
+      }
+      if (!/^\d{10}$/.test(phone)) {
+        showToast("Please enter a valid 10-digit phone number.", true);
+        return;
+      }
+
+      // ── Collect chip selections ──────────────────────────
+      const boards = [...document.querySelectorAll('input[name="boards"]:checked')]
+                       .map(cb => cb.value);
+      const standards = [...document.querySelectorAll('input[name="standards"]:checked')]
+                          .map(cb => cb.value);
+
+      // ── Build payload ────────────────────────────────────
+      const payload = {
+        Name:          name,
+        Phone:         phone,
+        Email:         document.getElementById("email").value.trim(),
+        Qualification: document.getElementById("qualification").value.trim(),
+        Experience:    document.getElementById("experience").value || 0,
+        Boards:        boards,
+        Standards:     standards,
+        Subjects:      document.getElementById("subjects").value.trim(),
+        Locality:      document.getElementById("locality").value.trim(),
+        City:          document.getElementById("city").value.trim(),
+        Address:       document.getElementById("address").value.trim(),
+        Description:   document.getElementById("description").value.trim(),
+        Mode:          document.querySelector('input[name="mode"]:checked')?.value || "Both"
+      };
+
+      // ── Submit ───────────────────────────────────────────
+      btn.disabled = true;
+      btn.textContent = "Submitting…";
+
+      const result = await submitTutor(payload); // defined in api.js
+
+      btn.disabled = false;
+      btn.textContent = "Register as Tutor";
+
+      if (result.success) {
+        showToast("✅ Registered successfully! Students can now find you.");
+        document.getElementById("tutorForm").reset();
+        // Re-check "Both" as default after reset
+        document.getElementById("modeBoth").checked = true;
+      } else {
+        showToast("❌ Something went wrong. Please try again.", true);
+      }
+    });
+
+    // ── Toast helper ─────────────────────────────────────────
+    function showToast(msg, isError = false) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "show" + (isError ? " error" : "");
+      setTimeout(() => { t.className = ""; }, 4000);
+    }
+  </script>
+</body>
+</html>
