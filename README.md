@@ -152,10 +152,4 @@ Some ideas for future improvements:
 
 ---
 
-## 📄 License
 
-MIT License — free to use, modify, and distribute.
-
----
-
-*Built with ❤️ for students and teachers across India.*
